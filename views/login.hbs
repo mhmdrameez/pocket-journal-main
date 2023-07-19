@@ -1,24 +1,23 @@
 <div class="pkt_content_container flex">
-    
+
     <div class="login-container" id="container">
         <div class="form-container sign-up-container">
-            <form action="/signup" method="post">
+            <form action="/signup" method="post" onsubmit="return validateSignUpForm()">
                 <h1>Create Account</h1>
                 {{#if loginErr}}
                 <p class="error">{{loginErr}}</p>
                 {{/if}}
-                <input type="text" placeholder="Name" name="User-Name" />
-                <input type="email" placeholder="Email" name="email" />
-                <input type="password" placeholder="Password" name="Password" />
+                <input type="text" placeholder="Name" name="User-Name" required />
+                <input type="email" placeholder="Email" name="email" required />
+                <input type="password" placeholder="Password" name="Password" required />
                 <button type="submit">Sign Up</button>
             </form>
         </div>
         <div class="form-container sign-in-container">
-            <form action="/login" method="post">
+            <form action="/login" method="post" onsubmit="return validateSignInForm()">
                 <h1>Sign in</h1>
-
-                <input type="email" placeholder="Email" name="email" />
-                <input type="password" placeholder="Password" name="Password" />
+                <input type="email" placeholder="Email" name="email" required />
+                <input type="password" placeholder="Password" name="Password" required />
                 {{!-- <a href="#">Forgot your password?</a> --}}
                 <button type="submit">Sign In</button>
             </form>
@@ -28,19 +27,21 @@
                 <div class="overlay-panel overlay-left">
                     <h1>Welcome Back!</h1>
                     <p>To keep connected with us please login with your personal info</p>
-                    <button class="ghost" id="signIn" >Sign In</button>
+                    <button class="ghost" id="signIn">Sign In</button>
                 </div>
                 <div class="overlay-panel overlay-right">
                     <h1>Hello, Friend!</h1>
-                    <p>Enter your personal details and start journey with us</p>
-                    <button class="ghost" id="signUp" " >Sign Up</button>
+                    <p>Enter your personal details and start the journey with us</p>
+                    <button class="ghost" id="signUp">Sign Up</button>
                 </div>
             </div>
         </div>
     </div>
 
+    <div id="popup" class="popup">
+        <span class="popup-text" id="popupText">Please enter valid Email and Password.</span>
+    </div>
 
-    </form>
     <script>
         const signUpButton = document.getElementById('signUp');
         const signInButton = document.getElementById('signIn');
@@ -53,6 +54,41 @@
         signInButton.addEventListener('click', () => {
             container.classList.remove("right-panel-active");
         });
+
+        function validateSignUpForm() {
+            const name = document.forms[0]["User-Name"].value;
+            const email = document.forms[0].email.value;
+            const password = document.forms[0].Password.value;
+
+            if (name === "" || email === "" || password === "") {
+                showPopup();
+                return false;
+            }
+
+            return true;
+        }
+
+        function validateSignInForm() {
+            const email = document.forms[1].email.value;
+            const password = document.forms[1].Password.value;
+
+            if (email === "" || password === "") {
+                showPopup();
+                return false;
+            }
+
+            return true;
+        }
+
+        function showPopup() {
+            const popup = document.getElementById("popup");
+            const popupText = document.getElementById("popupText");
+            popup.style.display = "block";
+
+            setTimeout(() => {
+                popup.style.display = "none";
+            }, 2000); // Hide the popup after 2 seconds
+        }
     </script>
 
 </div>
