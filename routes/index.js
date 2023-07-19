@@ -17,28 +17,38 @@ router.get('/', function (req, res, next) {
 
 router.get('/login', (req, res) => {
   if (req.session.loginStatus) {
-    res.redirect("/user/user-index")
+    res.redirect("/user/user-index");
   } else {
-    res.render('login', { "loginErr": req.session.loginErr });
-    req.session.loginErr = false
+    const loginErr = req.session.loginErr;
+    req.session.loginErr = false; // Clear the loginErr after displaying it
+    res.render('login', { "loginErr": loginErr });
   }
 });
-router.post('/login', (req,res) => {
+
+// POST route to handle user login
+router.post('/login', (req, res) => {
   userHelpers.doLogin(req.body).then((response) => {
-    if(response.status) {
-      req.session.loginStatus = true
-      req.session.user = response.user
-      res.redirect('/user')
+    if (response.status) {
+      req.session.loginStatus = true;
+      req.session.user = response.user;
+      res.redirect('/user');
     } else {
-      req.session.loginErr = "Invalid Email or Password"
-      res.redirect('/login')
+      req.session.loginErr = "Invalid Email or Password";
+      res.redirect('/login');
     }
-  })
-})
+  }).catch((error) => {
+    req.session.loginErr = "An error occurred during login.";
+    res.redirect('/login');
+  });
+});
+
+// GET route to handle user logout
 router.get('/logout', (req, res) => {
-  req.session.destroy()
-  res.redirect('/')
-})
+  req.session.destroy(() => {
+    res.redirect('/');
+  });
+});
+
 
 
 router.post('/signup', (req, res) => {
